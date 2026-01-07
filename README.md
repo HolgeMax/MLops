@@ -73,7 +73,7 @@ All commands below should be run **from the project root directory** (the folder
 
 ---
 
-## Running Scripts Directly
+### Running Scripts Directly
 
 All scripts use Typer, meaning they act like command-line programs.
 
@@ -81,6 +81,7 @@ All scripts use Typer, meaning they act like command-line programs.
 
 ```bash
 uv run <rawdata dir> <processed data dir>
+```bash
 
 
 Run to processes raw data. Normalizes image between 0 and 1, and saves in <processed data dir> augment directory

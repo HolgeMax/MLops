@@ -1,16 +1,38 @@
-from torch import nn
 import torch
+from torch import nn
 
-class Model(nn.Module):
-    """Just a dummy model to show how to structure your code"""
-    def __init__(self):
-        super().__init__()
-        self.layer = nn.Linear(1, 1)
 
+class MyAwesomeModel(nn.Module):
+    """My custom model."""
+
+    def __init__(self) -> None:
+        super(MyAwesomeModel, self).__init__()
+
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1)
+        self.dropout = nn.Dropout(0.25)
+        self.fc1 = nn.Linear(128, 10)
+        self.reLU = nn.ReLU()
+        self.maxpool = nn.MaxPool2d(2)
+    
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.layer(x)
+        x = self.reLU(self.conv1(x))
+        x = self.maxpool(x)
+        x = self.reLU(self.conv2(x))
+        x = self.maxpool(x)
+        x = self.reLU(self.conv3(x))
+        x = self.maxpool(x)
+        x = self.dropout(x)
+        x = torch.flatten(x, 1)
+        return self.fc1(x)
+
 
 if __name__ == "__main__":
-    model = Model()
-    x = torch.rand(1)
-    print(f"Output shape of model: {model(x).shape}")
+    model = MyAwesomeModel()
+    print(f"Model architecture: {model}")
+    print(f"Number of parameters: {sum(p.numel() for p in model.parameters())}")
+
+    dummy_input = torch.randn(1, 1, 28, 28)
+    output = model(dummy_input)
+    print(f"Output shape: {output.shape}")

@@ -119,7 +119,7 @@ and save a plot to:
 
 reports/figures/embeddings.png
 
-## Tasks
+### Tasks
 We have also added tasks, included in tasks.py, which defines reusable CLI tasks using Invoke.
 
 Install invoke

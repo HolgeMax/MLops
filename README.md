@@ -79,7 +79,9 @@ All scripts use Typer, meaning they act like command-line programs.
 
 ### Preprocess the data
 
+```bash
 uv run <rawdata dir> <processed data dir>
+
 
 Run to processes raw data. Normalizes image between 0 and 1, and saves in <processed data dir> augment directory
 

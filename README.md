@@ -81,14 +81,15 @@ All scripts use Typer, meaning they act like command-line programs.
 
 ```bash
 uv run <rawdata dir> <processed data dir>
-```bash
-
+```
 
 Run to processes raw data. Normalizes image between 0 and 1, and saves in <processed data dir> augment directory
 
 ### Train model
 
+```bash
 uv run <src/project_mlops/train.py> --<learing rate> --<Batch size> --<epochs>
+```
 Run this to train model, with augments learning rate, batch size and epochs. Trained models are saved in models/ and plot and statistics are saved in reports/figures/
 
 To inspect the model architechture

@@ -90,6 +90,7 @@ Run to processes raw data. Normalizes image between 0 and 1, and saves in <proce
 ```bash
 uv run <src/project_mlops/train.py> --<learing rate> --<Batch size> --<epochs>
 ```
+
 Run this to train model, with augments learning rate, batch size and epochs. Trained models are saved in models/ and plot and statistics are saved in reports/figures/
 
 To inspect the model architechture
@@ -99,17 +100,23 @@ uv run src/project_mlops/model.py
 
 Evaluate a trained model checkpoint on the test set.
 
+```bash
 uv run src/project_mlops/evaluate.py models/model.pth
+```
 
-The output in terminal should be 
+The output in terminal should be:
 
-**Test accuracy: 0.87**
+```bash
+Test accuracy: 0.87
+```
 
 ### Model visualization 
 
 Visualize learned representations using t-SNE.
 
+```bash
 uv run src/project_mlops/visualize.py models/model.pth
+```
 
 This will:
 
@@ -121,20 +128,31 @@ Reduce dimensionality with PCA + t-SNE
 
 and save a plot to:
 
+```bash
 reports/figures/embeddings.png
+```
 
 ### Tasks
 We have also added tasks, included in tasks.py, which defines reusable CLI tasks using Invoke.
 
 Install invoke
+
+```bash
 uvx invoke
+```
 
 List available tasks
+
+```bash
 uvx invoke --list
+```
 
 Example tasks
+
+```bash
 uvx invoke preprocess-data
 uvx invoke train
+```
 
 
 tasks.py acts like a Makefile for Python and is useful for standardizing
@@ -144,11 +162,17 @@ repetitive commands.
 ### Adding dependencies
 
 Add a dependency
+
+```bash
 uv add scikit-learn
+```
+
 
 Export requirements.txt (optional)
-uv pip freeze > requirements.txt
 
+```bash
+uv pip freeze > requirements.txt
+```
 
 Note: requirements.txt is optional when using uv, since pyproject.toml
 

@@ -24,6 +24,11 @@ def test(ctx: Context) -> None:
     ctx.run("uv run coverage report -m -i", echo=True, pty=not WINDOWS)
 
 @task
+def python(ctx):
+    """ """
+    ctx.run("which python" if os.name != "nt" else "where python")
+
+@task
 def docker_build(ctx: Context, progress: str = "plain") -> None:
     """Build docker images."""
     ctx.run(
@@ -36,6 +41,15 @@ def docker_build(ctx: Context, progress: str = "plain") -> None:
         echo=True,
         pty=not WINDOWS
     )
+
+
+# Git helpers
+
+@task
+def git(ctx, message):
+    ctx.run(f"git add .")
+    ctx.run(f"git commit -m '{message}'")
+    ctx.run(f"git push")
 
 # Documentation commands
 @task

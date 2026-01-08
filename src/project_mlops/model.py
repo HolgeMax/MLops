@@ -3,8 +3,7 @@ from torch import nn
 
 
 class MyAwesomeModel(nn.Module):
-    """
-    A simple Convolutional Neural Network (CNN) for image classification on MNIST dataset.
+    """A simple Convolutional Neural Network (CNN) for image classification on MNIST dataset.
     Three layered cnn followed by a fully connected layer.
 
     Architecture:

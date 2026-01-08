@@ -1,21 +1,28 @@
 import matplotlib.pyplot as plt
 import torch
 import typer
-from project_mlops.model import MyAwesomeModel
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
+from project_mlops.model import MyAwesomeModel
+
+DEVICE = torch.device(
+    "cuda" if torch.cuda.is_available()
+    else "mps" if torch.backends.mps.is_available()
+    else "cpu"
+)
+app = typer.Typer()
 
 
+@app.command()
 def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> None:
     """Visualize model predictions, and save as a figure.
 
-    args:
+    Args:
         model_checkpoint: Path to model checkpoint
         figure_name: Name of the output figure file
-
-    returns:
+    
+    Returns:
         None
     """
     model: torch.nn.Module = MyAwesomeModel().to(DEVICE)
@@ -25,9 +32,10 @@ def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> Non
     model.load_state_dict(state_dict)
 
     model.eval()
-    model.fc1 = torch.nn.Identity()
+    model.fc1 = torch.nn.Identity() # replace final layer with identity to get embeddings
 
-    test_images = torch.load("data/processed/test_images.pt")
+    # load test data into dataloader
+    test_images = torch.load("data/processed/test_images.pt") 
     test_target = torch.load("data/processed/test_target.pt")
     test_dataset = torch.utils.data.TensorDataset(test_images, test_target)
 
@@ -35,13 +43,14 @@ def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> Non
 
     loader = torch.utils.data.DataLoader(test_dataset, batch_size=32)
 
+    # inference mode for efficiency
     with torch.inference_mode():
         for images, target in loader:
             # move data to device
             images = images.to(DEVICE)
             target = target.to(DEVICE)
 
-            preds = model(images)
+            preds = model(images) # get embeddings
             embeddings.append(preds)
             targets.append(target)
 
@@ -65,5 +74,9 @@ def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> Non
     plt.savefig(f"reports/figures/{figure_name}")
 
 
+def main() -> None:
+    app()
+
 if __name__ == "__main__":
-    typer.run(visualize)
+    main()
+

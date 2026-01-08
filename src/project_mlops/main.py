@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import torch
 import typer
-from data import corrupt_mnist
+
+from project_mlops.data import corrupt_mnist
 from project_mlops.model import MyAwesomeModel
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
@@ -13,12 +14,12 @@ app = typer.Typer()
 def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
     """Train a model on MNIST.
 
-    args:
+    Args:
         lr: Learning rate
         batch_size: Batch size
         epochs: Number of epochs
 
-    returns:
+    Returns:
         None
     """
     print("Training day and night")
@@ -63,5 +64,36 @@ def train(lr: float = 1e-3, batch_size: int = 32, epochs: int = 10) -> None:
     fig.savefig("training_statistics.png")  # save figure -> reports/figures/training_statistics.png
 
 
+@app.command()
+def evaluate(model_checkpoint: str) -> None:
+    """Evaluate a trained model (checkpoint.pth) on test data and print the accuracy.
+
+    Args:
+        model_checkpoint: Path to model checkpoint
+
+    Returns:
+        None
+    """
+    print("Evaluating like my life depended on it")
+    print(model_checkpoint)
+
+    model = MyAwesomeModel().to(DEVICE)  # move model to device
+    model.load_state_dict(torch.load(model_checkpoint))  # load model checkpoint weights
+
+    _, test_set = corrupt_mnist()  # load test data
+    test_dataloader = torch.utils.data.DataLoader(test_set, batch_size=32)  # create dataloader
+
+    model.eval()  # set model to eval mode
+    correct, total = 0, 0
+    for img, target in test_dataloader:
+        img, target = img.to(DEVICE), target.to(DEVICE)  # move data to device
+        y_pred = model(img)  # forward pass
+        correct += (y_pred.argmax(dim=1) == target).float().sum().item()
+        total += target.size(0)
+    print(f"Test accuracy: {correct / total}")  # print accuracy
+
+def main() -> None:
+    app()
+
 if __name__ == "__main__":
-    typer.run(train)
+    main()

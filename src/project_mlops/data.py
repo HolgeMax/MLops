@@ -1,16 +1,17 @@
+import glob
+import os
+
 import torch
 import typer
-import os
-import glob
 
 
 def normalize(images: torch.Tensor) -> torch.Tensor:
     """Normalize images to z-score standardization.
 
-    args:
+    Args:
         images: Tensor (N, C, H, W)
 
-    returns:
+    Returns:
         normalized images: Tensor (N, C, H, W)
     """
     return (images - images.mean()) / images.std()
@@ -19,28 +20,28 @@ def normalize(images: torch.Tensor) -> torch.Tensor:
 def preprocess_data(raw_dir: str, processed_dir: str) -> None:
     """Process raw data, both train and test, and save it to processed directory.
 
-    args:
+    Args:
         raw_dir: Raw data directory
         processed_dir: Processed data save directory
-
-    returns:
+    
+    Returns:
         None
     """
     # Load and concatenate train data
-    train_images, train_target = [], []  # create empty lists
-    images_paths = sorted(glob.glob(os.path.join(raw_dir, "train_images_*.pt")))
+    train_images, train_target = [], [] # create empty lists
+    images_paths = sorted(glob.glob(os.path.join(raw_dir, "train_images_*.pt"))) 
     targets_paths = sorted(glob.glob(os.path.join(raw_dir, "train_target_*.pt")))
-    if not images_paths:  # check if list is empty
-        raise ValueError(f"No train_images files found in {raw_dir}")  # if empty -> raise error
-    if len(images_paths) != len(targets_paths):  # check input/target len match
+    if not images_paths: # check if list is empty
+        raise ValueError(f"No train_images files found in {raw_dir}") # if empty -> raise error
+    if len(images_paths) != len(targets_paths): # check input/target len match
         raise ValueError(
             f"Mismatched number of train images ({len(images_paths)}) and targets ({len(targets_paths)}) in {raw_dir}"
         )
     # append onto lists
     for img_p, tgt_p in zip(images_paths, targets_paths):
         train_images.append(torch.load(img_p))
-        train_target.append(torch.load(tgt_p))
-
+        train_target.append(torch.load(tgt_p)) 
+    
     # create single dir tensors
     train_images = torch.cat(train_images)
     train_target = torch.cat(train_target)
@@ -49,9 +50,10 @@ def preprocess_data(raw_dir: str, processed_dir: str) -> None:
     test_images: torch.Tensor = torch.load(f"{raw_dir}/test_images.pt")
     test_target: torch.Tensor = torch.load(f"{raw_dir}/test_target.pt")
 
-    train_images = train_images.unsqueeze(1).float()  # use unsqueeze to add channel dim
+
+    train_images = train_images.unsqueeze(1).float() # use unsqueeze to add channel dim
     test_images = test_images.unsqueeze(1).float()
-    train_target = train_target.long()  # ensure target is long dtype for CE loss
+    train_target = train_target.long() # ensure target is long dtype for CE loss
     test_target = test_target.long()
 
     # use def normalize
@@ -67,11 +69,11 @@ def preprocess_data(raw_dir: str, processed_dir: str) -> None:
 
 def corrupt_mnist() -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]:
     """Return train and test datasets for corrupt MNIST.
-
-    args:
+    
+    Args:
         None
-
-    returns:
+    
+    Returns:
         train_set: torch.utils.data.Dataset
     """
     # load processed data
@@ -82,8 +84,11 @@ def corrupt_mnist() -> tuple[torch.utils.data.Dataset, torch.utils.data.Dataset]
 
     train_set = torch.utils.data.TensorDataset(train_images, train_target)
     test_set = torch.utils.data.TensorDataset(test_images, test_target)
-    return train_set, test_set
+    return train_set, test_set 
 
+
+def main() -> None:
+    typer.run(preprocess_data)
 
 if __name__ == "__main__":
-    typer.run(preprocess_data)
+    main()

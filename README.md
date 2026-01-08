@@ -1,4 +1,4 @@
-# project_mlops
+# Project_mlops
 
 Project repo for DTU course MLOPS
 This repository contains a structured machine learning project following an

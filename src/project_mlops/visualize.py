@@ -5,15 +5,19 @@ from project_mlops.model import MyAwesomeModel
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 
-DEVICE = torch.device(
-    "cuda" if torch.cuda.is_available()
-    else "mps" if torch.backends.mps.is_available()
-    else "cpu"
-)
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 
 def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> None:
-    """Visualize model predictions."""
+    """Visualize model predictions, and save as a figure.
+
+    args:
+        model_checkpoint: Path to model checkpoint
+        figure_name: Name of the output figure file
+
+    returns:
+        None
+    """
     model: torch.nn.Module = MyAwesomeModel().to(DEVICE)
 
     # load weights onto correct device
@@ -21,7 +25,7 @@ def visualize(model_checkpoint: str, figure_name: str = "embeddings.png") -> Non
     model.load_state_dict(state_dict)
 
     model.eval()
-    model.fc = torch.nn.Identity()
+    model.fc1 = torch.nn.Identity()
 
     test_images = torch.load("data/processed/test_images.pt")
     test_target = torch.load("data/processed/test_target.pt")

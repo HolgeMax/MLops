@@ -3,7 +3,20 @@ from torch import nn
 
 
 class MyAwesomeModel(nn.Module):
-    """My custom model."""
+    """
+    A simple Convolutional Neural Network (CNN) for image classification on MNIST dataset.
+    Three layered cnn followed by a fully connected layer.
+
+    Architecture:
+    - Conv2d -> ReLU -> MaxPool2d
+    - Conv2d -> ReLU -> MaxPool2d
+    - Conv2d -> ReLU -> MaxPool2d
+    - Dropout
+    - Fully Connected Layer
+
+    Input: 1x28x28 grayscale images
+    Output: 10 class scores
+    """
 
     def __init__(self) -> None:
         super(MyAwesomeModel, self).__init__()
@@ -15,7 +28,7 @@ class MyAwesomeModel(nn.Module):
         self.fc1 = nn.Linear(128, 10)
         self.reLU = nn.ReLU()
         self.maxpool = nn.MaxPool2d(2)
-    
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.reLU(self.conv1(x))
         x = self.maxpool(x)
